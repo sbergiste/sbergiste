@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To Wong Foo Quote Generator</title>
+  <style>
+    /* Minimalist typography & layout reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #fcfcfc;
+      color: #1a1a1a;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1.5rem;
+    }
+
+    main {
+      max-width: 640px;
+      width: 100%;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #737373;
+      margin-bottom: 2.5rem;
+    }
+
+    .quote-card {
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 2.5rem;
+    }
+
+    blockquote {
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: #111111;
+      font-style: italic;
+      margin-bottom: 1.25rem;
+      transition: opacity 0.2s ease-in-out;
+    }
+
+    cite {
+      font-size: 0.95rem;
+      font-weight: 500;
+      font-style: normal;
+      color: #525252;
+      display: block;
+      transition: opacity 0.2s ease-in-out;
+    }
+
+    cite::before {
+      content: "— ";
+    }
+
+    button {
+      background: #171717;
+      color: #ffffff;
+      border: 1px solid #171717;
+      padding: 0.75rem 1.75rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    button:hover {
+      background: #404040;
+      border-color: #404040;
+    }
+
+    button:focus {
+      outline: 2px solid #171717;
+      outline-offset: 3px;
+    }
+
+    .fade-out {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <header>
+      <h1>To Wong Foo, Thanks for Everything! Julie Newmar</h1>
+    </header>
+
+    <div class="quote-card">
+      <blockquote id="quote-text"></blockquote>
+      <cite id="quote-author"></cite>
+    </div>
+
+    <button id="generate-btn" type="button">New Quote</button>
+  </main>
+
+  <script>
+    // Curated quotes array from the movie
+    const quotes = [
+      {
+        quote: "When a guy puts on a dress, he's a man in a dress. When a guy puts on a dress and acts like a woman, he's a drag queen. When a guy puts on a dress and looks like a woman, he's a female impersonator. When a guy puts on a dress and is beyond a woman... he's a drag queen legend!",
+        character: "Vida Boheme"
+      },
+      {
+        quote: "I don't think of myself as a man, and I don't think of myself as a woman. I think of myself as a miracle.",
+        character: "Noxeema Jackson"
+      },
+      {
+        quote: "Approval is good, but attention is better.",
+        character: "Noxeema Jackson"
+      },
+      {
+        quote: "I have no choice but to be fabulous.",
+        character: "Vida Boheme"
+      },
+      {
+        quote: "Rule number one: Approaching a lady with a weapon is a violation of protocol.",
+        character: "Vida Boheme"
+      },
+      {
+        quote: "When you're in a pinch, improvise.",
+        character: "Vida Boheme"
+      },
+      {
+        quote: "Miss Vida, you are a vision in orange.",
+        character: "Noxeema Jackson"
+      },
+      {
+        quote: "I'm the Latin boy wonder!",
+        character: "Chi-Chi Rodriguez"
+      },
+      {
+        quote: "Darlin', you're a drag queen. When you're a drag queen, you have a duty to perform.",
+        character: "Noxeema Jackson"
+      },
+      {
+        quote: "Style is everything. Style is the difference between a girl who looks like a million bucks and a girl who looks like a buck.",
+        character: "Vida Boheme"
+      },
+      {
+        quote: "I don't know what you are, but you're an angel.",
+        character: "Carol Ann"
+      },
+      {
+        quote: "Whatever you are, you're the most gorgeous thing that ever walked into this town.",
+        character: "Clara"
+      },
+      {
+        quote: "Step one: Get a car. Step two: Get out of town!",
+        character: "Chi-Chi Rodriguez"
+      },
+      {
+        quote: "This turn of events is unfortunate.",
+        character: "Vida Boheme"
+      },
+      {
+        quote: "You take care of yourself, okay? 'Cause if anything happens to you, I'll kill you.",
+        character: "Noxeema Jackson"
+      }
+    ];
+
+    let lastIndex = -1;
+
+    // DOM Elements
+    const quoteText = document.getElementById('quote-text');
+    const quoteAuthor = document.getElementById('quote-author');
+    const generateBtn = document.getElementById('generate-btn');
+
+    // Function to select and display a new random quote without immediate repeats
+    function displayRandomQuote() {
+      if (quotes.length === 0) return;
+
+      let randomIndex;
+      do {
+        randomIndex = Math.floor(Math.random() * quotes.length);
+      } while (randomIndex === lastIndex && quotes.length > 1);
+
+      lastIndex = randomIndex;
+      const selected = quotes[randomIndex];
+
+      // Subtle fade out/in effect
+      quoteText.classList.add('fade-out');
+      quoteAuthor.classList.add('fade-out');
+
+      setTimeout(() => {
+        quoteText.textContent = `“${selected.quote}”`;
+        quoteAuthor.textContent = selected.character;
+        quoteText.classList.remove('fade-out');
+        quoteAuthor.classList.remove('fade-out');
+      }, 150);
+    }
+
+    // Event listener for button click
+    generateBtn.addEventListener('click', displayRandomQuote);
+
+    // Initial load quote
+    displayRandomQuote();
+  </script>
+</body>
+</html>
